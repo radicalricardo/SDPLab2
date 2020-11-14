@@ -3,6 +3,7 @@ package com.sdp;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 
@@ -50,11 +51,6 @@ public class SrvUser extends Thread {
                     default:
                         break;
                 }
-
-
-
-
-
 
                 //SrvUserHandler clientThread = new SrvUserHandler(cSocket);
                 //clientsConnected.add(clientThread);

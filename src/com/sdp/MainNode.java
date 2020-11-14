@@ -1,13 +1,14 @@
 package com.sdp;
 
-import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 
 public class MainNode {
-    public static HashMap<Integer, String> nodeList = new HashMap<>();
-    public static HashMap<Integer, String> mainNodeHashMap = new HashMap<Integer, String>();
+    public static HashMap<Integer, ArrayList<String>> nodeList = new HashMap<>();
+    public static HashMap<String, String> mainNodeHashMap = new HashMap<>();
+    private static Integer nodeID = 0;
 
 
     public static void main(String[] args) throws Exception {
@@ -16,32 +17,36 @@ public class MainNode {
         ServerSocket nodeSocket = new ServerSocket(23422);
         ServerSocket clientSocket = new ServerSocket(23423);
         System.out.println("(Main Node) Iniciada ligação.");
-        nodeList.put(nodeSocket.getLocalPort(), nodeSocket.getInetAddress().toString()); //Main Node também é um nó participante
+
+        ArrayList<String> nodeInfo = new ArrayList<>();
+        nodeInfo.add(nodeSocket.getInetAddress().toString());
+        nodeInfo.add(Integer.toString(nodeSocket.getLocalPort()));
+        registerNode(nodeInfo);
         Thread nodeRegisterThread = new Thread(new SrvRegisterNode(nodeSocket));
         nodeRegisterThread.start();
+        //cria uma thread para listen conexoes novas de clientes
         Thread clientListenerThread = new Thread(new SrvUser(clientSocket));
         clientListenerThread.start();
-
-
-        //cria uma thread para listen conexoes novas de clientes
-
-
-
-
-
-
-
 
     }
 
     public static void registerKV(String chave, String valor) {
-
-
     }
 
     public static void searchKV(String chave, String toString) {
     }
 
     public static void deleteKV(String chave, String toString) {
+    }
+
+    public static void registerNode(ArrayList<String> nodeInfo) {
+        nodeID++;
+        if(MainNode.nodeList.size() < 10) {
+            MainNode.nodeList.put(nodeID, nodeInfo);
+            System.out.println("(Main Node) Informação de nó participante registada.");
+        }
+        else{
+            System.out.println("(Main Node) Numero máximo de nós participantes na rede atingido.");
+        }
     }
 }

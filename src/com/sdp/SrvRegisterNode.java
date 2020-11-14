@@ -1,13 +1,15 @@
 package com.sdp;
 
 import java.io.*;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class SrvRegisterNode implements Runnable {
     private final ServerSocket nodeSocket;
     private static ObjectInputStream in;
+    private ArrayList<String> buffer = new ArrayList<>();
+    private Integer currentNodeID = 0;
 
 
     public SrvRegisterNode(ServerSocket nodeSocket) {
@@ -24,17 +26,11 @@ public class SrvRegisterNode implements Runnable {
                 Socket nSocket = nodeSocket.accept();
                 System.out.println("(Main Node) Ligação a novo nó participante establecida!");
                 in = new ObjectInputStream(nSocket.getInputStream());
-                String ParticipantNodePort = in.readObject().toString();
-                InetAddress ParticipantNodeIP = nSocket.getInetAddress();
-
-                if(MainNode.nodeList.size() < 10) {
-                    MainNode.nodeList.put(Integer.parseInt(ParticipantNodePort), ParticipantNodeIP.toString());
-                }
-                else{
-                    System.out.println("(Main Node) Numero máximo de nós participantes na rede atingido.");
-                }
-
-                System.out.println("(Main Node) Informação de nó participante registada.");
+                String participantNodePort = in.readObject().toString();
+                String participantNodeIP = nSocket.getInetAddress().toString();
+                buffer.add(participantNodeIP);
+                buffer.add(participantNodePort);
+                MainNode.registerNode(buffer);
                 nSocket.close();
 
                 } catch (IOException | ClassNotFoundException e) {
