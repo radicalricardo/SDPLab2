@@ -13,7 +13,7 @@ public class ParticipantNode {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
 
-        String port = "34532";
+        String port = args[0];
         ServerSocket socket = new ServerSocket(Integer.parseInt(port));
         Socket connectMainNode = new Socket("127.0.0.1", 23422); //args!
         out = new PrintWriter(connectMainNode.getOutputStream(), true);
