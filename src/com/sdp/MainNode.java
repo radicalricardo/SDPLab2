@@ -24,14 +24,12 @@ public class MainNode {
         nodeInfo.add(nodeSocket.getInetAddress().toString());
         nodeInfo.add(Integer.toString(nodeSocket.getLocalPort()));
         registerNode(nodeInfo);
-        Thread nodeRegisterThread = new Thread(new SrvRegisterNode(nodeSocket));
+        Thread nodeRegisterThread = new Thread(new com.sdp.SrvRegisterNode(nodeSocket));
         nodeRegisterThread.start();
         //cria uma thread para listen conexoes novas de clientes
-        Thread clientListenerThread = new Thread(new SrvUser(clientSocket));
+        Thread clientListenerThread = new Thread(new com.sdp.SrvUser(clientSocket));
         clientListenerThread.start();
 
-
-        
     }
 
     public static void registerKV(String chave, String valor) throws IOException {
