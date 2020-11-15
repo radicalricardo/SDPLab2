@@ -1,6 +1,8 @@
 package com.sdp;
 
+import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -28,15 +30,30 @@ public class MainNode {
         Thread clientListenerThread = new Thread(new SrvUser(clientSocket));
         clientListenerThread.start();
 
+
+        
     }
 
-    public static void registerKV(String chave, String valor) {
+    public static void registerKV(String chave, String valor) throws IOException {
+        int node = hash(chave, nodeList.size());
+        sendToNode(node, chave, valor);
     }
 
-    public static void searchKV(String chave, String toString) {
+    private static void sendToNode(int node, String chave, String valor) throws IOException {
+        System.out.println("hi");
+        if (node == 1){
+            mainNodeHashMap.put(chave, valor);
+        }
+        else{
+            Socket connectSideNode = new Socket(nodeList.get(node).get(0), Integer.parseInt(nodeList.get(node).get(1)));
+        }
     }
 
-    public static void deleteKV(String chave, String toString) {
+
+    public static void searchKV(String chave, String valor) {
+    }
+
+    public static void deleteKV(String chave, String valor) {
     }
 
     public static void registerNode(ArrayList<String> nodeInfo) {
@@ -48,5 +65,10 @@ public class MainNode {
         else{
             System.out.println("(Main Node) Numero máximo de nós participantes na rede atingido.");
         }
+    }
+
+    public static int hash(Object key, int nodeNumber){
+        int objKey = Math.abs(key.hashCode());
+        return (objKey % nodeNumber) + 1;
     }
 }
