@@ -9,7 +9,6 @@ public class SrvRegisterNode implements Runnable {
     private final ServerSocket nodeSocket;
     private static ObjectInputStream in;
     private ArrayList<String> buffer = new ArrayList<>();
-    private Integer currentNodeID = 0;
 
 
     public SrvRegisterNode(ServerSocket nodeSocket) {
@@ -21,13 +20,14 @@ public class SrvRegisterNode implements Runnable {
     public void run() {
         System.out.println("(Main Node) Aguardando ligação de nos participantes...");
         //Thread que regista novos nós participantes
+
         while(true) {
             try {
                 Socket nSocket = nodeSocket.accept();
                 System.out.println("(Main Node) Ligação a novo nó participante establecida!");
                 in = new ObjectInputStream(nSocket.getInputStream());
                 String participantNodePort = in.readObject().toString();
-                String participantNodeIP = nSocket.getInetAddress().toString();
+                String participantNodeIP = nSocket.getInetAddress().toString().split("/")[1];
                 buffer.add(participantNodeIP);
                 buffer.add(participantNodePort);
                 MainNode.registerNode(buffer);

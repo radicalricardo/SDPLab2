@@ -37,7 +37,7 @@ public class SrvUser extends Thread {
 
                 switch(comando){
                     case "R":
-                        MainNode.registerKV(chave, valor.toString());
+                        MainNode.registerKV(comando, chave, valor.toString());
                         break;
                     case "C":
                         MainNode.searchKV(chave, valor.toString());
