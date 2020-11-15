@@ -32,17 +32,28 @@ public class MainNode {
 
     }
 
-    public static void registerKV(String command, String chave, String valor) throws IOException {
-        int node = hash(chave, nodeList.size());
-        sendToNode(command, node, chave, valor);
-    }
-
-    private static void sendToNode(String command, int node, String chave, String valor) throws IOException {
+    static String sendToNode(String command, String chave, String valor) throws IOException {
         ArrayList<String> envelope = new ArrayList<>();
+        String response;
+
+        int node = hash(chave, nodeList.size());
+
         if (node == 1){
-            mainNodeHashMap.put(chave, valor);
-            String response = "OK";
-            sendToClient(response);
+            switch(command){
+                case "R":
+                    mainNodeHashMap.put(chave, valor);
+                    response = "OK";
+                    break;
+                case "C":
+                    return mainNodeHashMap.get(chave);
+                case "D":
+                    mainNodeHashMap.remove(chave);
+                    response = "OK";
+                    break;
+                default:
+                    response = "NOK";
+                    break;
+            }
         }
         else{
             Socket connectSideNode = new Socket(nodeList.get(node).get(0), Integer.parseInt(nodeList.get(node).get(1)));
@@ -54,20 +65,18 @@ public class MainNode {
             out.reset();
             out.writeObject(envelope);
             BufferedReader in = new BufferedReader(new InputStreamReader(connectSideNode.getInputStream()));
-            String response = in.readLine();
-            sendToClient(response);
+            response = in.readLine();
         }
-    }
-
-    private static void sendToClient(String response) {
-
-    }
-
-
-    public static void searchKV(String chave, String valor) {
-    }
-
-    public static void deleteKV(String chave, String valor) {
+        //desenrascanso #2482984982
+        if (response.equals("OK")){
+            return "OK";
+        }
+        else if (response.equals("NOK")){
+            return "NOK";
+        }
+        else{
+            return response;
+        }
     }
 
     public static void registerNode(ArrayList<String> nodeInfo) {

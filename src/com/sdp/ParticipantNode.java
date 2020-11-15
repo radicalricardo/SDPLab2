@@ -7,10 +7,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ParticipantNode {
-    //public static ArrayList<Object> participantNodeID = new ArrayList<>();
     public static HashMap<String, String> sideNodeHashMap = new HashMap<>();
     private static PrintWriter out;
-    private static BufferedReader in;
+    private static BufferedReader in; //não sei porque é que está cinzento
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
 
@@ -36,7 +35,7 @@ public class ParticipantNode {
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-            ArrayList<String> input = (ArrayList<String>) in.readObject(); //AAAAAAAAAAA
+            ArrayList<String> input = (ArrayList<String>) in.readObject(); //AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
             String comando = input.get(0);
             String chave = input.get(1);
             String valor = null;
@@ -46,16 +45,26 @@ public class ParticipantNode {
 
             switch(comando){
                 case "R":
-                    System.out.println("done");
+                    if(sideNodeHashMap.containsKey(chave)){
+                        out.println("NOK");
+                    }
                     sideNodeHashMap.put(chave, valor);
-                    out.println("OK");
-                    break;
-                case "D":
-                    sideNodeHashMap.remove(chave);
+                    //System.out.println("breakpoint");
                     out.println("OK");
                     break;
                 case "C":
-                    sideNodeHashMap.get(chave);
+                    if(!(sideNodeHashMap.containsKey(chave))){
+                        out.println("NOK");
+                    }
+                    //System.out.println("another breakpoint");
+                    out.println(sideNodeHashMap.get(chave));
+                    break;
+                case "D":
+                    if(!(sideNodeHashMap.containsKey(chave))){
+                        out.println("NOK");
+                    }
+                    sideNodeHashMap.remove(chave);
+                    //System.out.println("for the horde");
                     out.println("OK");
                     break;
                 case "L":
@@ -80,10 +89,10 @@ public class ParticipantNode {
     }
 
     //não funciona porque o servidor de registar novos nós apanha o OK primeiro :(
-    private static void sendOK() throws IOException {
+    /*private static void sendOK() throws IOException {
         Socket connectMainNode = new Socket("127.0.0.1", 23422); //args!
         PrintWriter out = new PrintWriter(connectMainNode.getOutputStream(), true);
         out.println("OK");
-    }
+    }*/
 
 }

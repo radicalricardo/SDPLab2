@@ -16,11 +16,16 @@ public class SrvUser extends Thread {
 
     @Override
     public void run() {
-        while(true){
-            System.out.println("(Main Node) Aguardando ligação de clientes...");
+        System.out.println("(Main Node) Aguardando ligação de clientes...");
+        Socket cSocket = null;
+        try {
+            cSocket = clientSocket.accept();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        while(true){
             try {
-                Socket cSocket = clientSocket.accept();
                 System.out.println("(Main Node) Cliente conectado!");
                 in = new BufferedReader(new InputStreamReader(cSocket.getInputStream()));
                 String input = in.readLine();
@@ -29,31 +34,13 @@ public class SrvUser extends Thread {
                 String comando = userInputArray[0];
                 String chave = userInputArray[1];
                 StringBuilder valor = new StringBuilder();
-
+                PrintWriter out = new PrintWriter(cSocket.getOutputStream(), true);
                 for (String s : userValueArray) {
                     valor.append(s);
                     valor.append(" ");
                 }
+                out.println(MainNode.sendToNode(comando, chave, valor.toString()));
 
-                switch(comando){
-                    case "R":
-                        MainNode.registerKV(comando, chave, valor.toString());
-                        break;
-                    case "C":
-                        MainNode.searchKV(chave, valor.toString());
-                        break;
-                    case "D":
-                        MainNode.deleteKV(chave, valor.toString());
-                        break;
-                    case "Q":
-                        break;
-                    default:
-                        break;
-                }
-
-                //SrvUserHandler clientThread = new SrvUserHandler(cSocket);
-                //clientsConnected.add(clientThread);
-                //threadPool.execute(clientThread);
             } catch (IOException e) {
                 e.printStackTrace();
             }
