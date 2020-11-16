@@ -41,17 +41,29 @@ public class MainNode {
         if (node == 1){
             switch(command){
                 case "R":
+                    if(mainNodeHashMap.containsKey(chave)){
+                        response = "B"; //B: já existe
+                        break;
+                    }
                     mainNodeHashMap.put(chave, valor);
-                    response = "OK";
+                    response = "A";
                     break;
                 case "C":
+                    if(!(mainNodeHashMap.containsKey(chave))){
+                        response = "B"; //B: nao existe
+                        break;
+                    }
                     return mainNodeHashMap.get(chave);
                 case "D":
+                    if(!(mainNodeHashMap.containsKey(chave))){
+                        response = "B";
+                        break;
+                    }
                     mainNodeHashMap.remove(chave);
-                    response = "OK";
+                    response = "A";
                     break;
                 default:
-                    response = "NOK";
+                    response = "C";
                     break;
             }
         }
@@ -66,17 +78,9 @@ public class MainNode {
             out.writeObject(envelope);
             BufferedReader in = new BufferedReader(new InputStreamReader(connectSideNode.getInputStream()));
             response = in.readLine();
-        }
-        //desenrascanso #2482984982
-        if (response.equals("OK")){
-            return "OK";
-        }
-        else if (response.equals("NOK")){
-            return "NOK";
-        }
-        else{
             return response;
         }
+        return response;
     }
 
     public static void registerNode(ArrayList<String> nodeInfo) {

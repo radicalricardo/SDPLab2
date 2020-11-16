@@ -37,24 +37,59 @@ public class Client {
             switch(comando){
                 case "R":
                     out.println(userInput);
-                    String response = in.readLine();
+                    String rResponse = in.readLine();
 
-                    if(response.equals("OK")){
+                    if(rResponse.equals("A")){
                         System.out.println("Item registado com sucesso.");
+                        break;
+                    }
+                    else if(rResponse.equals("B")){
+                        System.out.println("Chave existente.");
+                        break;
                     }
                     else{
-                        System.out.println("Ocorreu um erro");
+                        System.out.println("Ocorreu um erro.");
+                        break;
                     }
-
-                    break;
                 case "C":
                     out.println(userInput);
-                    break;
+                    String cResponse = in.readLine();
+                    if(cResponse.length() > 1){
+                        //se ainda tiver tempo tenho de fazer algo melhor que esta martelada
+                        if(cResponse.equals("null")){
+                            System.out.println("Ocorreu um erro");
+                            break;
+                        }
+                        System.out.println(cResponse);
+                        break;
+                    }
+                    if(cResponse.equals("B")){
+                        System.out.println("Chave inexistente.");
+                        break;
+                    }
+                    else{
+                        System.out.println("Ocorreu um erro.");
+                        break;
+                    }
                 case "D":
                     out.println(userInput);
-                    break;
+                    String dResponse = in.readLine();
+                    if(dResponse.equals("A")){
+                        System.out.println("Item removido com sucesso.");
+                        break;
+                    }
+                    if(dResponse.equals("B")){
+                        System.out.println("Chave inexistente.");
+                        break;
+                    }
+                    else{
+                        System.out.println("Ocorreu um erro.");
+                        break;
+                    }
                 case "Q":
-                    out.println(userInput);
+                    System.exit(1);
+                default:
+                    System.out.println("Ocorreu um erro.");
                     break;
 
             }

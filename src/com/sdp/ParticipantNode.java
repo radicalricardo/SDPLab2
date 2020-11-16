@@ -15,7 +15,7 @@ public class ParticipantNode {
 
         String port = args[0];
         ServerSocket socket = new ServerSocket(Integer.parseInt(port));
-        Socket connectMainNode = new Socket("127.0.0.1", 23422); //args!
+        Socket connectMainNode = new Socket("127.0.0.1", 23422); //IP do Main Node e Port do Main Node
         out = new PrintWriter(connectMainNode.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(connectMainNode.getInputStream()));
         ObjectOutputStream outList = new ObjectOutputStream(connectMainNode.getOutputStream());
@@ -36,6 +36,7 @@ public class ParticipantNode {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             ArrayList<String> input = (ArrayList<String>) in.readObject(); //AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            System.out.println("here");
             String comando = input.get(0);
             String chave = input.get(1);
             String valor = null;
@@ -46,26 +47,38 @@ public class ParticipantNode {
             switch(comando){
                 case "R":
                     if(sideNodeHashMap.containsKey(chave)){
-                        out.println("NOK");
+                        out.println("B"); //B: já existe
                     }
-                    sideNodeHashMap.put(chave, valor);
-                    //System.out.println("breakpoint");
-                    out.println("OK");
+                    try {
+                        sideNodeHashMap.put(chave, valor);
+                        //System.out.println("breakpoint");
+                        out.println("A"); //A: OK
+                    } catch (Exception e) {
+                        out.println("C"); //C: Erro
+                    }
                     break;
                 case "C":
                     if(!(sideNodeHashMap.containsKey(chave))){
-                        out.println("NOK");
+                        out.println("B"); //B: nao existe
                     }
-                    //System.out.println("another breakpoint");
-                    out.println(sideNodeHashMap.get(chave));
-                    break;
+                    try {
+                        //System.out.println("another breakpoint");
+                        out.println(sideNodeHashMap.get(chave));
+                        break;
+                    } catch (Exception e) {
+                        out.println("C"); //C: Erro
+                    }
                 case "D":
                     if(!(sideNodeHashMap.containsKey(chave))){
-                        out.println("NOK");
+                        out.println("B"); //B: nao existe
                     }
-                    sideNodeHashMap.remove(chave);
-                    //System.out.println("for the horde");
-                    out.println("OK");
+                    try {
+                        sideNodeHashMap.remove(chave);
+                        //System.out.println("for the horde");
+                        out.println("A"); //A: OK
+                    } catch (Exception e) {
+                        out.println("C"); //C: Erro
+                    }
                     break;
                 case "L":
                     break;
@@ -73,26 +86,8 @@ public class ParticipantNode {
                     break;
             }
 
-            /*barbaridades abaixo pls ignore
-            String[] userInputArray = input.split(" ");
-            String[] userValueArray = Arrays.copyOfRange(userInputArray, 2, userInputArray.length);
-            String comando = userInputArray[0];
-            String chave = userInputArray[1];
-            StringBuilder valor = new StringBuilder();
-
-            for (String s : userValueArray) {
-                valor.append(s);
-                valor.append(" ");
-            }*/
-
         }
     }
 
-    //não funciona porque o servidor de registar novos nós apanha o OK primeiro :(
-    /*private static void sendOK() throws IOException {
-        Socket connectMainNode = new Socket("127.0.0.1", 23422); //args!
-        PrintWriter out = new PrintWriter(connectMainNode.getOutputStream(), true);
-        out.println("OK");
-    }*/
 
 }
