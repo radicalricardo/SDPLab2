@@ -93,8 +93,13 @@ public class MainNode {
     static void sendList() throws IOException {
         ArrayList<String> envelope = new ArrayList<>();
 
-        for (Map.Entry<String, String> entry : mainNodeHashMap.entrySet())
-            System.out.println("Chave: " + entry.getKey() + " Valor: " +  entry.getValue());
+        if(mainNodeHashMap.size() == 0){
+            System.out.println("Sem itens");
+        }
+        else {
+            for (Map.Entry<String, String> entry : mainNodeHashMap.entrySet())
+                System.out.println("Chave: " + entry.getKey() + " Valor: " + entry.getValue());
+        }
 
         if(nodeList.size() > 1){
             for (int i = 2; i <= nodeList.size(); i++){

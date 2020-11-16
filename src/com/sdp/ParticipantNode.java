@@ -79,8 +79,13 @@ public class ParticipantNode {
                     }
                     break;
                 case "L":
-                    for (Map.Entry<String, String> entry : sideNodeHashMap.entrySet())
-                        System.out.println("Chave: " + entry.getKey() + " Valor: " +  entry.getValue());
+                    if(sideNodeHashMap.size() == 0){
+                        System.out.println("Sem itens");
+                    }
+                    else {
+                        for (Map.Entry<String, String> entry : sideNodeHashMap.entrySet())
+                            System.out.println("Chave: " + entry.getKey() + " Valor: " + entry.getValue());
+                    }
                     break;
                 default:
                     break;
