@@ -5,11 +5,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ParticipantNode {
     public static HashMap<String, String> sideNodeHashMap = new HashMap<>();
     private static PrintWriter out;
-    private static BufferedReader in; //não sei porque é que está cinzento
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
 
@@ -17,7 +17,6 @@ public class ParticipantNode {
         ServerSocket socket = new ServerSocket(Integer.parseInt(port));
         Socket connectMainNode = new Socket("127.0.0.1", 23422); //IP do Main Node e Port do Main Node
         out = new PrintWriter(connectMainNode.getOutputStream(), true);
-        in = new BufferedReader(new InputStreamReader(connectMainNode.getInputStream()));
         ObjectOutputStream outList = new ObjectOutputStream(connectMainNode.getOutputStream());
         outList.reset();
         outList.writeObject(port);
@@ -33,10 +32,9 @@ public class ParticipantNode {
             //isto esta horrivel :(
 
             out = new PrintWriter(socket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-            ArrayList<String> input = (ArrayList<String>) in.readObject(); //AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-            System.out.println("here");
+            ObjectInputStream inObj = new ObjectInputStream(socket.getInputStream());
+            ArrayList<String> input = (ArrayList<String>) inObj.readObject(); //AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            //System.out.println("bbbbbbbreakpoint");
             String comando = input.get(0);
             String chave = input.get(1);
             String valor = null;
@@ -81,6 +79,8 @@ public class ParticipantNode {
                     }
                     break;
                 case "L":
+                    for (Map.Entry<String, String> entry : sideNodeHashMap.entrySet())
+                        System.out.println("Chave: " + entry.getKey() + " Valor: " +  entry.getValue());
                     break;
                 default:
                     break;

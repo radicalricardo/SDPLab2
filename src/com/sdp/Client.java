@@ -86,6 +86,9 @@ public class Client {
                         System.out.println("Ocorreu um erro.");
                         break;
                     }
+                case "L":
+                    out.println(comando);
+                    break;
                 case "Q":
                     System.exit(1);
                 default:

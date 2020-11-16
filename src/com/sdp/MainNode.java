@@ -4,7 +4,9 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class MainNode {
@@ -21,7 +23,7 @@ public class MainNode {
         System.out.println("(Main Node) Iniciada ligação.");
 
         ArrayList<String> nodeInfo = new ArrayList<>();
-        nodeInfo.add(nodeSocket.getInetAddress().toString());
+        nodeInfo.add(nodeSocket.getInetAddress().toString().split("/")[1]);
         nodeInfo.add(Integer.toString(nodeSocket.getLocalPort()));
         registerNode(nodeInfo);
         Thread nodeRegisterThread = new Thread(new SrvRegisterNode(nodeSocket));
@@ -35,6 +37,12 @@ public class MainNode {
     static String sendToNode(String command, String chave, String valor) throws IOException {
         ArrayList<String> envelope = new ArrayList<>();
         String response;
+
+        System.out.println("here");
+        if(command.equals("L")){
+            sendList();
+            return null;
+        }
 
         int node = hash(chave, nodeList.size());
 
@@ -69,7 +77,6 @@ public class MainNode {
         }
         else{
             Socket connectSideNode = new Socket(nodeList.get(node).get(0), Integer.parseInt(nodeList.get(node).get(1)));
-            System.out.println("works!");
             ObjectOutputStream out = new ObjectOutputStream(connectSideNode.getOutputStream());
             envelope.add(command);
             envelope.add(chave);
@@ -83,7 +90,26 @@ public class MainNode {
         return response;
     }
 
-    public static void registerNode(ArrayList<String> nodeInfo) {
+    static void sendList() throws IOException {
+        ArrayList<String> envelope = new ArrayList<>();
+
+        for (Map.Entry<String, String> entry : mainNodeHashMap.entrySet())
+            System.out.println("Chave: " + entry.getKey() + " Valor: " +  entry.getValue());
+
+        if(nodeList.size() > 1){
+            for (int i = 2; i <= nodeList.size(); i++){
+                Socket connectSideNode = new Socket(nodeList.get(i).get(0), Integer.parseInt(nodeList.get(i).get(1)));
+                ObjectOutputStream out = new ObjectOutputStream(connectSideNode.getOutputStream());
+                envelope.add("L");
+                envelope.add(""); // :(
+                envelope.add("");
+                out.reset();
+                out.writeObject(envelope);
+            }
+        }
+    }
+
+    static void registerNode(ArrayList<String> nodeInfo) {
         nodeID++;
         if(MainNode.nodeList.size() < 10) {
             MainNode.nodeList.put(nodeID, nodeInfo);

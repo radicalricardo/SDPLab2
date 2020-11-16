@@ -32,7 +32,7 @@ public class SrvUser extends Thread {
                 String input = in.readLine();
                 String[] userInputArray = input.split(" ");
                 String comando = userInputArray[0];
-                String chave;
+                String chave = "";
                 String valor = "";
 
                 switch(comando){
@@ -59,6 +59,9 @@ public class SrvUser extends Thread {
                         }
                         valor = valorSB.toString();
                         out.println(MainNode.sendToNode(comando, chave, valor));
+                        break;
+                    case "L":
+                        MainNode.sendList();
                         break;
                     default:
                         try {
